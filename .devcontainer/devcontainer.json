@@ -1,0 +1,10 @@
+{
+  "name": "iam-logger",
+  "workspaceFolder": "/app",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "app",
+  "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"],
+  "settings": {
+    "editor.formatOnSave": true
+  }
+}
