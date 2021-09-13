@@ -1,23 +1,32 @@
-import { Body } from './';
+import { Body } from './body';
+import * as moment from 'moment-timezone';
 
-type reportType =
-  `9月2日:${string}kgから${string}kg,${string}%から${string}% ${string}`;
+// type reportDiffType =
+//   `${string}:${string}kgから${string}kg,${string}%から${string}% ${string}`;
 
 export class Tattletale {
-  private bodies: Body[] | undefined;
-  setWeights = (bodies: Body[]): void => {
-    1 + 1;
+  private previousBodies = new Array<Body>(5);
+
+  setWeights = (previousBody: Body): void => {
+    this.previousBodies.push(previousBody);
   };
 
-  report = (todaysBody: Body): reportType => {
-    const previousBody = new Body(61.3, 16.7);
-    const diff = todaysBody.minus(previousBody);
-    return `9月2日:${previousBody.myWeight().toFixed(1)}kgから${diff
-      .myWeight()
-      .toFixed(1)}kg,${previousBody.myBfp().toFixed(1)}%から${diff
-      .myBfp()
-      .toFixed(1)}% ${todaysBody.myWeight().toFixed(1)}kg ${todaysBody
-      .myBfp()
-      .toFixed(1)}%`;
+  reportDiff = (todaysBody: Body): string => {
+    return this.previousBodies.reduce(
+      (buildReport: string, pastBody: Body): string => {
+        return `${buildReport + '\n'}${moment
+          .tz(pastBody.myDate(), 'Asia/Tokyo')
+          .format('MM月DD日')}:${pastBody
+          .myWeight()
+          .toFixed(1)}kgから${todaysBody
+          .minus(pastBody)
+          .myWeight()
+          .toFixed(1)}kg,${pastBody.myBfp().toFixed(1)}%から${todaysBody
+          .minus(pastBody)
+          .myBfp()
+          .toFixed(1)}%`;
+      },
+      `${todaysBody.myWeight().toFixed(1)}kg ${todaysBody.myBfp().toFixed(1)}%`,
+    );
   };
 }

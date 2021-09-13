@@ -1,6 +1,7 @@
 export class Body {
   private weight: number;
   private bfp: number;
+  private date: string | undefined;
 
   constructor(weight: number, bfp: number) {
     this.weight = weight;
@@ -14,6 +15,10 @@ export class Body {
     );
   };
 
+  setDate = (date: string) => {
+    this.date = date;
+  };
+
   minus = (minuend: Body): Body => {
     return new Body(this.weight - minuend.weight, this.bfp - minuend.bfp);
   };
@@ -24,5 +29,9 @@ export class Body {
 
   myBfp = (): number => {
     return this.bfp;
+  };
+
+  myDate = (): string | undefined => {
+    return this.date;
   };
 }

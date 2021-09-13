@@ -1,7 +1,9 @@
 /** todo
  * 前日の最終体重と体脂肪率を今回の計算結果と比較したい。
- * 過去7週間の木曜日の体重と比較する
- * 一個前の体重、体脂肪率と減算して比較結果を返す
+ * 基準になる曜日の最終データだけ抜き出したい。
+ * 過去5週間の木曜日の最終体重をキューしていきたい
+ * 過去7週間の木曜日の体重をいてらぶるに処理して当日体重とdiffをとって文言を作成したい
+ * 5日間以上体重について報告していなかったら、警告してほしい(reportDitch)
  */
 import { Body, Tattletale } from '../src/health/core/domain';
 
@@ -24,11 +26,29 @@ describe('Body Domain', () => {
 
   it('test diff text export', () => {
     const tattletale = new Tattletale();
-    const bodies: Body[] = [];
-    bodies.push(new Body(61.3, 16.7));
-    tattletale.setWeights(bodies);
-    expect(tattletale.report(new Body(61.0, 16.4))).toBe(
-      '9月2日:61.3kgから-0.3kg,16.7%から-0.3% 61.0kg 16.4%',
+    const previousBody = new Body(61.3, 16.7);
+    previousBody.setDate('2021-09-02T21:46:09+09:00');
+    tattletale.setWeights(previousBody);
+    expect(tattletale.reportDiff(new Body(61.0, 16.4))).toBe(
+      '61.0kg 16.4%\n09月02日:61.3kgから-0.3kg,16.7%から-0.3%',
     );
+  });
+
+  it('test diff text export if tattletale has multiple previous weights ', () => {
+    const tattletale = new Tattletale();
+    const previousBody1 = new Body(61.3, 16.7);
+    previousBody1.setDate('2021-09-04T21:46:09+09:00');
+    const previousBody2 = new Body(62.0, 17.5);
+    previousBody2.setDate('2021-09-11T21:46:09+09:00');
+    tattletale.setWeights(previousBody1);
+    tattletale.setWeights(previousBody2);
+    expect(tattletale.reportDiff(new Body(61.0, 16.4))).toBe(
+      '61.0kg 16.4%\n09月04日:61.3kgから-0.3kg,16.7%から-0.3%\n09月11日:62.0kgから-1.0kg,17.5%から-1.1%',
+    );
+  });
+
+  it('test diff text export if setWeights null', () => {
+    const tattletale = new Tattletale();
+    expect(tattletale.reportDiff(new Body(61.0, 16.4))).toBe('61.0kg 16.4%');
   });
 });
