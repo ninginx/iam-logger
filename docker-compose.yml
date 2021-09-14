@@ -6,7 +6,7 @@ services:
       context: ./
       dockerfile: ./docker/datastore/Dockerfile
     environment:
-      DATASTORE_PROJECT_ID: app
+      DATASTORE_PROJECT_ID: emulator
       DATASTORE_LISTEN_ADDRESS: 0.0.0.0:8081
     ports:
       - '8081:8081'
@@ -14,6 +14,9 @@ services:
     build:
       context: ./
       dockerfile: ./docker/app/Dockerfile
+    environment:
+      DATASTORE_EMULATOR_HOST: datastore:8081
+      DATASTORE_PROJECT_ID: emulator
     ports:
       - '3000:3000'
     volumes:
@@ -21,5 +24,5 @@ services:
       - node_modules_volume:/app/node_modules
     links:
       - 'datastore'
-volumes: 
+volumes:
   node_modules_volume:

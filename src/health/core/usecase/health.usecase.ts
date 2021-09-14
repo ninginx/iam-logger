@@ -20,7 +20,8 @@ export class HealthUsecase {
         return new Promise((resolve) => {
           const tattletale = new Tattletale();
           bodies.forEach((body) => tattletale.setWeights(body));
-          return resolve(tattletale.reportDiff(new Body(weight, bfp)));
+          resolve(tattletale.reportDiff(new Body(weight, bfp)));
+          return 0;
         });
       })
       .then((reportTxt: string) => {
