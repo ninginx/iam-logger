@@ -4,6 +4,9 @@
  * 過去5週間の木曜日の最終体重をキューしていきたい
  * 過去7週間の木曜日の体重をいてらぶるに処理して当日体重とdiffをとって文言を作成したい
  * 5日間以上体重について報告していなかったら、警告してほしい(reportDitch)
+ * datastore saveに例外処理を入れたい
+ * datastore run queryに例外処理を入れたい
+ * orderがうまく機能しているか確認したい
  */
 import { HealthStore } from '../src/health/core/repositry';
 import { HealthDatastore } from '../src/health/infra/helath.datastore';
@@ -54,10 +57,11 @@ describe('Body Domain', () => {
     expect(tattletale.reportDiff(new Body(61.0, 16.4))).toBe('61.0kg 16.4%');
   });
 
-  it('test datastore save',async () => {
+  it('test datastore save', async () => {
     const healthStore: HealthStore = new HealthDatastore();
-    await healthStore.save(new Body(61.0, 16.4),'2021-09-14T21:53:17+09:00');
-    const health = await healthStore.findLastWeightsFor(1);
+    await healthStore.save(new Body(61.0, 16.4),'2021-09-15T21:53:17+09:00','Wednesday');
+    const health = await healthStore.filterBy('Wednesday',1);
     expect(health[0].equlas(new Body(61.0, 16.4))).toBeTruthy();
   });
+
 });

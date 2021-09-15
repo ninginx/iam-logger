@@ -13,9 +13,10 @@ export class HealthUsecase {
   }
 
   recordHealth = (bfp: number, weight: number): Promise<void> => {
+    const date = moment.tz('Asia/Tokyo');
     return this.healthStore
-      .save(new Body(weight, bfp), moment.tz('Asia/Tokyo').format())
-      .then(() => this.healthStore.findLastWeightsFor(5))
+      .save(new Body(weight, bfp), date.format(), date.format('dddd'))
+      .then(() => this.healthStore.filterBy('Thursday',5))
       .then((bodies: Body[]): Promise<string> => {
         return new Promise((resolve) => {
           const tattletale = new Tattletale();
