@@ -6,7 +6,8 @@
  * 5日間以上体重について報告していなかったら、警告してほしい(reportDitch)
  * datastore saveに例外処理を入れたい
  * datastore run queryに例外処理を入れたい
- * orderがうまく機能しているか確認したい
+ * ログ処理を入れたい
+ * ロールバックが機能しているかみたい
  */
 import { HealthStore } from '../src/health/core/repositry';
 import { HealthDatastore } from '../src/health/infra/helath.datastore';
@@ -59,9 +60,59 @@ describe('Body Domain', () => {
 
   it('test datastore save', async () => {
     const healthStore: HealthStore = new HealthDatastore();
-    await healthStore.save(new Body(61.0, 16.4),'2021-09-15T21:53:17+09:00','Wednesday');
-    const health = await healthStore.filterBy('Wednesday',1);
-    expect(health[0].equlas(new Body(61.0, 16.4))).toBeTruthy();
+    try {
+      await healthStore.save(
+        '3f29f0fa-c6cb-4731-9b9f-853c48866277',
+        new Body(61.0, 16.4),
+        '2021-09-13T21:53:17+09:00',
+        'Monday',
+      );
+      const health = await healthStore.filterBy('Monday', 1);
+      expect(health[0].equlas(new Body(61.0, 16.4))).toBeTruthy();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await healthStore.delete('3f29f0fa-c6cb-4731-9b9f-853c48866277');
+    }
   });
 
+  it('test filter by order', () => {
+    const healthStore: HealthStore = new HealthDatastore();
+
+    healthStore
+      .save(
+        'fcca8746-1ae1-4632-8cb7-6713ce0a78ac',
+        new Body(61.0, 16.8),
+        '2021-09-10T21:53:17+09:00',
+        'Sunday',
+      )
+      .then(() =>
+        healthStore.save(
+          '69eae599-bba2-40f2-b14e-a45b05b57a71',
+          new Body(60.8, 16.0),
+          '2021-09-03T21:53:17+09:00',
+          'Sunday',
+        ),
+      )
+      .then(() =>
+        healthStore.save(
+          '4243cc6a-e47b-4d3c-a169-54453df1012c',
+          new Body(61.2, 17.2),
+          '2021-09-19T21:53:17+09:00',
+          'Sunday',
+        ),
+      )
+      .then(() => healthStore.filterBy('Sunday', 3))
+      .then((health) => {
+        expect(health[0].equlas(new Body(61.2, 17.2))).toBeTruthy();
+        expect(health[1].equlas(new Body(61.0, 16.8))).toBeTruthy();
+        expect(health[2].equlas(new Body(60.8, 16.0))).toBeTruthy();
+      })
+      .catch((error) => console.error(error))
+      .finally(async () => {
+        await healthStore.delete('fcca8746-1ae1-4632-8cb7-6713ce0a78ac');
+        await healthStore.delete('69eae599-bba2-40f2-b14e-a45b05b57a71');
+        await healthStore.delete('4243cc6a-e47b-4d3c-a169-54453df1012c');
+      });
+  });
 });

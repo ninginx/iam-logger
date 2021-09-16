@@ -1,4 +1,4 @@
-// おしゃべりやろう。twitterか？FBか？それともおかんにチクるのか？
-export interface Chatter {
-  publish(text: string): Promise<void>;
+// twitter?FB?or Line?
+export interface SNS {
+  post(text: string): Promise<void>;
 }

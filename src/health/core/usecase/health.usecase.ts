@@ -1,22 +1,23 @@
 import { Body, Tattletale } from '../domain';
-import { Chatter, HealthStore } from '../repositry';
+import { SNS, HealthStore } from '../repositry';
 
 import * as moment from 'moment-timezone';
+import { v4 as uuid } from 'uuid';
 
 export class HealthUsecase {
   private readonly healthStore: HealthStore;
-  private readonly chatter: Chatter;
+  private readonly sns: SNS;
 
-  constructor(store: HealthStore, sns: Chatter) {
+  constructor(store: HealthStore, sns: SNS) {
     this.healthStore = store;
-    this.chatter = sns;
+    this.sns = sns;
   }
 
   recordHealth = (bfp: number, weight: number): Promise<void> => {
     const date = moment.tz('Asia/Tokyo');
     return this.healthStore
-      .save(new Body(weight, bfp), date.format(), date.format('dddd'))
-      .then(() => this.healthStore.filterBy('Thursday',5))
+      .save(uuid(), new Body(weight, bfp), date.format(), date.format('dddd'))
+      .then(() => this.healthStore.filterBy('Thursday', 5))
       .then((bodies: Body[]): Promise<string> => {
         return new Promise((resolve) => {
           const tattletale = new Tattletale();
@@ -26,7 +27,7 @@ export class HealthUsecase {
         });
       })
       .then((reportTxt: string) => {
-        this.chatter.publish(reportTxt);
+        this.sns.post(reportTxt);
       })
       .catch((err: Error) => {
         throw err;

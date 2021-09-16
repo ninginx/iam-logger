@@ -1,15 +1,20 @@
 import { Body } from '../core/domain';
-import { HealthStore ,dayOfWeek} from '../core/repositry'
+import { HealthStore, dayOfWeek } from '../core/repositry';
 
 import { Datastore } from '@google-cloud/datastore';
 import { Logger } from '@nestjs/common';
 
-export class HealthDatastore implements HealthStore{
-  private datastore = new Datastore()
+export class HealthDatastore implements HealthStore {
+  private datastore = new Datastore();
 
-  save = async (body: Body, created: string, dayOfTheWeek: string): Promise<void> => {
+  save = async (
+    uuid: string,
+    body: Body,
+    created: string,
+    dayOfTheWeek: string,
+  ): Promise<void> => {
     const kind = 'Health';
-    const healthKey = this.datastore.key([kind]);
+    const healthKey = this.datastore.key([kind, uuid]);
 
     const health = {
       key: healthKey,
@@ -17,7 +22,7 @@ export class HealthDatastore implements HealthStore{
         weight: body.myWeight(),
         bfp: body.myBfp(),
         created: created,
-        dayofweek: dayOfTheWeek
+        dayofweek: dayOfTheWeek,
       },
     };
 
@@ -27,8 +32,7 @@ export class HealthDatastore implements HealthStore{
       await transaction.run();
       await transaction.save(health);
       await transaction.commit();
-
-    } catch(err) {
+    } catch (err) {
       await transaction.rollback();
       throw err;
     }
@@ -36,14 +40,31 @@ export class HealthDatastore implements HealthStore{
     return;
   };
 
-  filterBy = async (dayOfTheWeek: dayOfWeek, limit: number): Promise<Body[]>  => {
-    const query = this.datastore.createQuery('Health').filter('dayofweek',dayOfTheWeek).order('created').limit(limit)
-    const [healths] = await this.datastore.runQuery(query)
-    console.log(healths)
+  delete = async (uuid: string): Promise<void> => {
+    const transaction = this.datastore.transaction();
+    try {
+      await transaction.delete(this.datastore.key(['Health', uuid]));
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
+  };
+
+  filterBy = async (
+    dayOfTheWeek: dayOfWeek,
+    limit: number,
+  ): Promise<Body[]> => {
+    const query = this.datastore
+      .createQuery('Health')
+      .filter('dayofweek', dayOfTheWeek)
+      .order('created', { descending: true })
+      .limit(limit);
+    const [healths] = await this.datastore.runQuery(query);
     // todo: healthsに型チェックを入れたい
-    const bodies: Body[] = healths.map((health)=>
-      new Body(health.weight, health.bfp)
+    const bodies: Body[] = healths.map(
+      (health) => new Body(health.weight, health.bfp),
     );
-    return new Promise((resolve)=>resolve(bodies))
-  }
+    return new Promise((resolve) => resolve(bodies));
+  };
 }
