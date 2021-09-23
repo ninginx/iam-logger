@@ -9,7 +9,7 @@
  * ログ処理を入れたい
  * ロールバックが機能しているかみたい
  * filterByの検索結果が0件だった時の処理をテストしたい
- * beforeEachにデータクリーンの処理を入れたい。原因不明なエラーが発生した際にデータストアチェックすればトレーサビリティが高まる
+ * グラフ画像を添付してポストしたい
  */
 
 import { HealthStore } from '../src/health/core/repositry';
@@ -17,17 +17,17 @@ import { HealthDatastore } from '../src/health/infra/helath.datastore';
 import { Body, Tattletale } from '../src/health/core/domain';
 
 describe('Body Domain', () => {
-  beforeAll(async ()=>{
+  beforeAll(async () => {
     try {
-      const healthStore = new HealthDatastore()
+      const healthStore = new HealthDatastore();
       await healthStore.delete('3f29f0fa-c6cb-4731-9b9f-853c48866277');
       await healthStore.delete('fcca8746-1ae1-4632-8cb7-6713ce0a78ac');
       await healthStore.delete('69eae599-bba2-40f2-b14e-a45b05b57a71');
       await healthStore.delete('4243cc6a-e47b-4d3c-a169-54453df1012c');
-    } catch(error) {
-      console.error(error)
+    } catch (error) {
+      console.error(error);
     }
-  })
+  });
   it('test Body equality', () => {
     expect(new Body(1.0, -0.8).equlas(new Body(61.0, 17.0))).toBeFalsy();
   });
@@ -120,7 +120,6 @@ describe('Body Domain', () => {
         expect(health[1].equlas(new Body(61.0, 16.8))).toBeTruthy();
         expect(health[2].equlas(new Body(60.8, 16.0))).toBeTruthy();
       })
-      .catch((error) => console.error(error))
+      .catch((error) => console.error(error));
   });
-
 });

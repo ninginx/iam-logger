@@ -2,7 +2,7 @@ import { Body } from '../core/domain';
 import { HealthStore, dayOfWeek } from '../core/repositry';
 
 import { Datastore } from '@google-cloud/datastore';
-import { Logger } from '@nestjs/common';
+// import { Logger } from '@nestjs/common';
 
 export class HealthDatastore implements HealthStore {
   private datastore = new Datastore();
