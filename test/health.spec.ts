@@ -10,6 +10,8 @@
  * ロールバックが機能しているかみたい
  * filterByの検索結果が0件だった時の処理をテストしたい
  * グラフ画像を添付してポストしたい
+ * 同じ曜日に複数データがあった場合、最新のcreatedを採用する
+ * dbからとってきたcreatedをsetWeightしたい
  */
 
 import { HealthStore } from '../src/health/core/repositry';
@@ -121,5 +123,9 @@ describe('Body Domain', () => {
         expect(health[2].equlas(new Body(60.8, 16.0))).toBeTruthy();
       })
       .catch((error) => console.error(error));
+  });
+
+  it('test integration test ,include date', () => {
+    console.log('integration test書いて...');
   });
 });

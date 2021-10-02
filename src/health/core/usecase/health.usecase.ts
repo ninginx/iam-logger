@@ -21,7 +21,7 @@ export class HealthUsecase {
     return (
       this.healthStore
         .save(uuid(), new Body(weight, bfp), date.format(), date.format('dddd'))
-        .then(() => this.healthStore.filterBy('Thursday', 5))
+        .then(() => this.healthStore.filterBy('Sunday', 5))
         .then((bodies: Body[]): Promise<string> => {
           return new Promise((resolve) => {
             const tattletale = new Tattletale();

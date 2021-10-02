@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { HealthService } from './health.service';
 
 @Controller('health')
@@ -6,12 +13,18 @@ export class HealthController {
   constructor(private healthService: HealthService) {}
 
   @Get()
-  getHello(): string {
-    return 'aaa';
+  async getHello(): Promise<{ weight: number; bfp: number }> {
+    return Promise.resolve({ weight: 10, bfp: 20 });
+    throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
   }
 
   @Post()
-  reportHealth(@Body() myHealth: { weight: number; bfp: number }) {
-    return this.healthService.report(myHealth.weight, myHealth.bfp);
+  reportHealth(
+    @Body() myHealth: { weight: number; bfp: number },
+  ): Promise<string> {
+    return this.healthService.report(
+      Number(myHealth.weight),
+      Number(myHealth.bfp),
+    );
   }
 }

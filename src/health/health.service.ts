@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Response } from 'express';
 import { HealthUsecase } from './core/usecase/health.usecase';
 import { HealthDatastore } from './infra';
 
@@ -11,5 +10,5 @@ export class HealthService {
   }
 
   report = async (myWeight: number, myBfp: number): Promise<string> =>
-    await this.healthUsecase.recordHealth(myWeight, myBfp);
+    await this.healthUsecase.recordHealth(myBfp, myWeight);
 }
