@@ -3,7 +3,7 @@
   "workspaceFolder": "/app",
   "dockerComposeFile": "../docker-compose.yml",
   "service": "app",
-  "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"],
+  "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode","ms-azuretools.vscode-docker","hashicorp.terraform"],
   "settings": {
     "editor.formatOnSave": true
   }
