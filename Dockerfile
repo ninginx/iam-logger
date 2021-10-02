@@ -2,7 +2,7 @@ FROM node:16-buster-slim AS build-stage
 
 WORKDIR /app
 COPY . ./
-RUN yarn install
+RUN yarn install && yarn build
 
 FROM node:16-buster-slim as production-stage
 WORKDIR /app
