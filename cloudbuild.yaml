@@ -7,7 +7,14 @@ steps:
   sed -i 's|VAR_TW_API_KEY|$_VAR_TW_API_KEY|' .env.example &&
   sed -i 's|VAR_TW_API_SECRET|$_VAR_TW_API_SECRET|' .env.example &&
   sed -i 's|VAR_TW_TOKEN|$_VAR_TW_TOKEN|' .env.example &&
-  sed -i 's|VAR_TW_TOKEN_SECRET|$_VAR_TW_TOKEN_SECRET|' .env.example"
+  sed -i 's|VAR_TW_TOKEN_SECRET|$_VAR_TW_TOKEN_SECRET|' .env.example &&
+  cat .env.example"
+  ]
+- name: gcr.io/cloud-builders/gcloud
+  entrypoint: 'bash'
+  args: [
+  '-c',
+  "cp .env.example .env"
   ]
 - name: 'gcr.io/cloud-builders/docker'
   entrypoint: 'bash'
