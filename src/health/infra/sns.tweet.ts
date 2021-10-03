@@ -27,10 +27,12 @@ export class Twitter implements SNS {
         '{application/json}',
         (err: { statusCode: number; data?: any }, body?: string | Buffer) => {
           if (err) {
-            reject(err);
+            reject(new Error(err.data));
             return;
           }
+          resolve()
           console.log(body);
+          return;
         },
       );
     });
