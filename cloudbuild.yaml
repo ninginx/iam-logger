@@ -3,8 +3,7 @@ steps:
   entrypoint: 'bash'
   args: [
   '-c',
-  "echo Environment Value Setiing &&
-  sed -i 's|VAR_TW_API_KEY|$_VAR_TW_API_KEY|' .env.example &&
+  "sed -i 's|VAR_TW_API_KEY|$_VAR_TW_API_KEY|' .env.example &&
   sed -i 's|VAR_TW_API_SECRET|$_VAR_TW_API_SECRET|' .env.example &&
   sed -i 's|VAR_TW_TOKEN|$_VAR_TW_TOKEN_VALUE|' .env.example &&
   sed -i 's|VAR_TW_TOKEN_SECRET|$_VAR_TW_TOKEN_SECRET|' .env.example &&
