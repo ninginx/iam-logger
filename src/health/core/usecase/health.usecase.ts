@@ -33,6 +33,7 @@ export class HealthUsecase {
         this.sns.post(reportTxt);
       })
       .catch((err: Error) => {
+        console.error(err);
         throw err;
       });
   };
