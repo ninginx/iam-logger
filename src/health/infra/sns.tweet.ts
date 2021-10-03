@@ -18,6 +18,8 @@ export class Twitter implements SNS {
     );
     console.log('process.env.TW_API_KEY',process.env.TW_API_KEY)
     console.log('process.env.TW_API_SECRET',process.env.TW_API_SECRET)
+    console.log('process.env.TW_API_KEY',process.env.TW_TOKEN)
+    console.log('process.env.TW_API_SECRET',process.env.TW_TOKEN_SECRET)
 
     return new Promise((resolve, reject) => {
       const formattedStatus = encodeURIComponent(status);
@@ -26,9 +28,10 @@ export class Twitter implements SNS {
         process.env.TW_TOKEN!,
         process.env.TW_TOKEN_SECRET!,
         '{}',
-        '{application/json}',
+        'application/json',
         (err: { statusCode: number; data?: any }, body?: string | Buffer) => {
           if (err) {
+            console.error(err)
             reject(new Error(err.data));
             return;
           }
