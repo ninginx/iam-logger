@@ -13,5 +13,5 @@ export class HealthService {
   }
 
   report = async (myWeight: number, myBfp: number): Promise<void> =>
-    await this.healthUsecase.recordHealth(myBfp, myWeight);
+    await this.healthUsecase.recordHealth(myBfp, myWeight).catch((e) => {throw e});
 }

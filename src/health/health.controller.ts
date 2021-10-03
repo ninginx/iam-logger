@@ -25,6 +25,6 @@ export class HealthController {
     return this.healthService.report(
       Number(myHealth.weight),
       Number(myHealth.bfp),
-    );
+    ).catch((e)=> {throw new HttpException(e.message, HttpStatus.FORBIDDEN)});
   }
 }
