@@ -62,13 +62,11 @@ export class HealthDatastore implements HealthStore {
       .limit(limit);
     const [healths] = await this.datastore.runQuery(query);
     // todo: healthsに型チェックを入れたい
-    const bodies: Body[] = healths.map(
-      (health) => {
-        const body = new Body(health.weight, health.bfp);
-        body.setDate(health.created);
-        return body
-      },
-    );
+    const bodies: Body[] = healths.map((health) => {
+      const body = new Body(health.weight, health.bfp);
+      body.setDate(health.created);
+      return body;
+    });
     return new Promise((resolve) => resolve(bodies));
   };
 }

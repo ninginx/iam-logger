@@ -21,7 +21,7 @@ export class HealthController {
   @Post()
   reportHealth(
     @Body() myHealth: { weight: number; bfp: number },
-  ): Promise<string> {
+  ): Promise<void> {
     return this.healthService.report(
       Number(myHealth.weight),
       Number(myHealth.bfp),

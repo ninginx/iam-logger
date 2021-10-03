@@ -1,4 +1,14 @@
 steps:
+- name: gcr.io/cloud-builders/gcloud
+  entrypoint: 'bash'
+  args: [
+  '-c',
+  "echo Environment Value Setiing &&
+  sed -i 's|VAR_TW_API_KEY|$_VAR_TW_API_KEY|' .env.example &&
+  sed -i 's|VAR_TW_API_SECRET|$_VAR_TW_API_SECRET|' .env.example &&
+  sed -i 's|VAR_TW_TOKEN|$_VAR_TW_TOKEN|' .env.example &&
+  sed -i 's|VAR_TW_TOKEN_SECRET|$_VAR_TW_TOKEN_SECRET|' .env.example"
+  ]
 - name: 'gcr.io/cloud-builders/docker'
   entrypoint: 'bash'
   args: ['-c', "docker build -t gcr.io/$PROJECT_ID/cloudrun-backend:$COMMIT_SHA . -f ./Dockerfile"]

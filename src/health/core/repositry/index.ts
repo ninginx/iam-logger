@@ -1,2 +1,2 @@
-export * from './chatter.repo';
+export * from './sns.repo';
 export * from './health.repo';
