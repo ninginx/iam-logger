@@ -16,6 +16,8 @@ export class Twitter implements SNS {
       null,
       'HMAC-SHA1',
     );
+    console.log('process.env.TW_API_KEY',process.env.TW_API_KEY)
+    console.log('process.env.TW_API_SECRET',process.env.TW_API_SECRET)
 
     return new Promise((resolve, reject) => {
       const formattedStatus = encodeURIComponent(status);
